@@ -103,6 +103,7 @@ export function SiteFooter() {
             { label: "Open tasks", href: "/tasks" },
             { label: "Record", href: "/record" },
             { label: "My earnings", href: "/me" },
+            { label: "Watch the demo", href: "/demo" },
           ],
         },
         {
