@@ -12,6 +12,12 @@
 
 <sub>About 2 minutes, narrated with captions. Click to watch on paradigmlabs.app/demo, or download it from the <a href="https://github.com/Abhishek222983101/paradigm-labs/releases/latest">latest release</a>.</sub>
 
+<br><br>
+
+[![Paradigm on the ETHGlobal showcase: Winner of World, World ID Agent Pass 1st place](docs/media/ethglobal-winner.png)](https://ethglobal.com/showcase/paradigm-2ovdu)
+
+<sub>From our <a href="https://ethglobal.com/showcase/paradigm-2ovdu">ETHGlobal showcase page</a>, captured 10 Nov 2026.</sub>
+
 </div>
 
 ---
