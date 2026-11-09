@@ -26,7 +26,7 @@
 
 Robots learn from videos of people doing everyday tasks, and that data is hard to buy fairly. Paradigm is an exchange for it:
 
-1. A robot team's **AI buying agent** posts a paid task, for example *"Fold a T-shirt, filmed from above, 6 USDC"*.
+1. A company building robots needs videos of a task its robot gets wrong. Its **AI agent** (a bot that buys data for them) posts a paid task, for example *"Fold a T-shirt, filmed from above, 6 USDC"*.
 2. A real person **proves they're human with World ID** and films the task on their phone, with a random spoken word and finger count so the clip can't be faked or reused.
 3. **Gemini watches the clip, plain code decides.** Accepted clips are encrypted and stored on **Swarm**. The verdict is a public record on **Arkiv**.
 4. The agent **pays the person in USDC on Hedera over x402**. Up to 5 USDC it pays on its own. Above that it stops and asks its owner to approve with **World Agent Pass**. Above 10 it never pays.
