@@ -36,5 +36,5 @@ Deleting data, rotating keys, changing Railway/Vercel/Neon settings, spending mo
 
 ## Repository facts
 - Owner: Abhishek, team Paradigm. Git identity: noreply email (set repo-local).
-- Live: https://adx-paradigm.vercel.app · Repo: https://github.com/Abhishek222983101/agentic-data-exchange
-- Deadline: Sat 7 Nov 2026 09:00 IST.
+- Live: https://paradigmlabs.app (same deploy as adx-paradigm.vercel.app) · Repo: https://github.com/Abhishek222983101/paradigm-labs
+- Hackathon snapshot (frozen, do not push): https://github.com/Abhishek222983101/agentic-data-exchange. ETHGlobal Mumbai 2026, World track winner.
