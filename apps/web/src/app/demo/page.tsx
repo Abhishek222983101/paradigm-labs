@@ -21,7 +21,7 @@ export default function DemoPage() {
     <Page>
       <PageHeader
         title="Watch the demo"
-        lead="The full flow, end to end, recorded on a phone and the live site. 3 min 47 s, with captions."
+        lead="The full flow, end to end, recorded on a phone and the live site. Under 4 minutes, with captions."
       />
       <div className="overflow-hidden rounded-xl border bg-black">
         {/* biome-ignore lint/a11y/useMediaCaption: captions are burned into the video */}

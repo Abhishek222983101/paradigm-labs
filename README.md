@@ -10,7 +10,7 @@
 
 [![Paradigm demo: the full flow end to end](docs/media/demo-poster.jpg)](https://paradigmlabs.app/demo)
 
-<sub>3 min 47 s, narrated with captions. Click to watch on paradigmlabs.app/demo, or download it from the <a href="https://github.com/Abhishek222983101/paradigm-labs/releases/latest">latest release</a>.</sub>
+<sub>Under 4 minutes, narrated with captions. Click to watch on paradigmlabs.app/demo, or download it from the <a href="https://github.com/Abhishek222983101/paradigm-labs/releases/latest">latest release</a>.</sub>
 
 </div>
 
