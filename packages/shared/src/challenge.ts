@@ -110,7 +110,6 @@ export const CHALLENGE_WORDS = [
   "flute",
   "trumpet",
   "banjo",
-  "cello",
   "harp",
   "whistle",
   "pencil",

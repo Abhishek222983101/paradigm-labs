@@ -5,7 +5,8 @@
       "namespace": "android_app",
       "package_name": "app.paradigm.adx",
       "sha256_cert_fingerprints": [
-        "10:4B:30:EE:69:77:0C:08:EB:7A:CB:53:40:93:E7:24:E2:AF:C7:5F:55:0D:C7:2C:CA:74:E8:61:7D:B3:EB:B7"
+        "10:4B:30:EE:69:77:0C:08:EB:7A:CB:53:40:93:E7:24:E2:AF:C7:5F:55:0D:C7:2C:CA:74:E8:61:7D:B3:EB:B7",
+        "22:95:E2:EF:12:DC:7D:05:FB:E7:4F:48:B8:AF:A2:28:A6:52:BE:5F:AF:09:81:FE:BF:BA:02:AB:65:B7:D3:36"
       ]
     }
   }

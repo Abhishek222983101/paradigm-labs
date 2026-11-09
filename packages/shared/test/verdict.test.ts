@@ -8,6 +8,7 @@ import {
   hamming,
   isBlocked,
   isNearDuplicate,
+  wordMatches,
 } from "../src/verdict"
 
 const good: AiReport = {
@@ -33,6 +34,18 @@ describe("verdict rules (code decides)", () => {
   })
   it("rejects the wrong word", () => {
     expect(run({ ...good, liveness: { word_heard: "mango", fingers_shown: 1 } }).verdict).toBe("reject")
+  })
+  it("accepts a word that sounds right but is spelled differently", () => {
+    expect(wordMatches("selo", "cello")).toBe(true)
+    expect(wordMatches("chello", "cello")).toBe(true)
+    expect(wordMatches("kandy", "candy")).toBe(true)
+    expect(wordMatches("bananna", "banana")).toBe(true)
+    expect(run({ ...good, liveness: { word_heard: "kandy", fingers_shown: 1 } }).verdict).toBe("accept")
+  })
+  it("still rejects a clearly different word", () => {
+    expect(wordMatches("mango", "candy")).toBe(false)
+    expect(wordMatches("tiger", "lemon")).toBe(false)
+    expect(wordMatches("pizza", "pasta")).toBe(false)
   })
   it("rejects the wrong finger count", () => {
     expect(run({ ...good, liveness: { word_heard: "candy", fingers_shown: 3 } }).verdict).toBe("reject")

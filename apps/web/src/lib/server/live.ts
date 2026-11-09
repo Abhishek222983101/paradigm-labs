@@ -24,7 +24,21 @@ export type LiveLog = {
   proof?: { label: string; href: string }
 }
 
+export type HistoryItem = {
+  id: string
+  at: string
+  status: string
+  verdict: string | null
+  reason: string | null
+  score: number | null
+  word: string | null
+  amount: number | null
+  approvedByHuman: boolean
+  proofs: { label: string; href: string }[]
+}
+
 export type LiveRun = {
+  history?: HistoryItem[]
   startedAt: string | null
   lastAt: string | null
   done: Partial<Record<NodeId, string>> // node → when it finished
@@ -32,6 +46,7 @@ export type LiveRun = {
   failed: NodeId | null
   log: LiveLog[]
   clip: { id: string; status: string } | null
+  rejected?: string | null
   amount: number | null
 }
 
@@ -147,7 +162,16 @@ export async function liveRun(): Promise<LiveRun> {
         if (vk) proof = { label: "Verdict", href: links.arkivEntity(vk) }
       }
       if (!e.ok && str(data.reason)) text = `${text}: ${str(data.reason)}`
-      push({ at, node, ok: e.ok, text, proof })
+      // A "not accepted" verdict is a normal outcome, not a failure: the check ran and said no.
+      const verdictRan = e.step === "verdict" && Boolean(data.summary)
+      if (verdictRan) {
+        const s = data.summary as { verdict?: string; reason?: string }
+        if (s.verdict && s.verdict !== "accept") {
+          run.rejected = s.reason ?? "The clip didn't pass the checks."
+          text = `Gemini watched the clip: not accepted. ${s.reason ?? ""}`.trim()
+        }
+      }
+      push({ at, node, ok: e.ok || verdictRan, text, proof })
     }
 
     if (submissionKey) {
@@ -221,7 +245,71 @@ export async function liveRun(): Promise<LiveRun> {
     }
   }
 
+  run.history = await recentClips(d)
   run.log.sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0))
   run.lastAt = run.log.at(-1)?.at ?? null
   return run
+}
+
+/** The last few clips with their result and every public proof, newest first. */
+async function recentClips(d: ReturnType<typeof db>): Promise<HistoryItem[]> {
+  const recent = await d
+    .select({ id: jobs.id, status: jobs.status, at: jobs.createdAt })
+    .from(jobs)
+    .orderBy(desc(jobs.createdAt))
+    .limit(8)
+  return Promise.all(
+    recent.map(async (j) => {
+      const evs = await d
+        .select({ step: events.step, data: events.data })
+        .from(events)
+        .where(
+          sql`${events.scope} = ${`submission:${j.id}`} and ${events.step} in ('verdict','store','publish')`,
+        )
+      const get = (step: string) => (evs.find((e) => e.step === step)?.data ?? {}) as Data
+      const summary = get("verdict").summary as
+        | { verdict?: string; reason?: string; score?: number; liveness?: { word?: string } }
+        | undefined
+      const proofs: HistoryItem["proofs"] = []
+      const swarmRef = str(get("store").swarmRef)
+      if (swarmRef) proofs.push({ label: "Swarm", href: links.swarmTestnet(swarmRef) })
+      const vk = str(get("publish").verificationKey)
+      if (vk) proofs.push({ label: "Verdict", href: links.arkivEntity(vk) })
+      const sk = str(get("publish").submissionKey)
+      let amount: number | null = null
+      let approvedByHuman = false
+      if (sk) {
+        const [pay] = await d
+          .select()
+          .from(payments)
+          .where(sql`lower(${payments.submissionKey}) = ${sk.toLowerCase()}`)
+          .limit(1)
+        if (pay?.status === "settled") {
+          amount = Number(pay.amount)
+          if (pay.hederaTx) proofs.push({ label: "Payment", href: links.hashscanTx(pay.hederaTx) })
+          if (pay.licenceKey) proofs.push({ label: "Licence", href: links.arkivEntity(pay.licenceKey) })
+          const [ag] = await d
+            .select({ data: events.data })
+            .from(events)
+            .where(
+              sql`${events.scope} = 'agent' and ${events.step} = 'approved' and lower(${events.data}->>'submissionKey') = ${sk.toLowerCase()}`,
+            )
+            .limit(1)
+          approvedByHuman = Boolean(ag)
+        }
+      }
+      return {
+        id: j.id,
+        at: j.at.toISOString(),
+        status: j.status,
+        verdict: summary?.verdict ?? null,
+        reason: summary?.reason ?? null,
+        score: typeof summary?.score === "number" ? summary.score : null,
+        word: summary?.liveness?.word ?? null,
+        amount,
+        approvedByHuman,
+        proofs,
+      }
+    }),
+  )
 }

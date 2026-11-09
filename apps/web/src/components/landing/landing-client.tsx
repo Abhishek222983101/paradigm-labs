@@ -87,7 +87,7 @@ export function SiteFooter() {
       wordmark="paradigm"
       fontFamily={ff}
       monoFamily={ff}
-      height="560px"
+      height="640px"
       crop={0}
       palette={
         dark

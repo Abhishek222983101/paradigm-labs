@@ -85,6 +85,45 @@ const norm = (s: string) =>
     .toLowerCase()
     .replace(/[^a-z-]/g, "")
 
+/** Rough spoken form: "cello" and "selo" or "chello" sound alike, so compare how words sound, not spelling. */
+const soundKey = (w: string) =>
+  w
+    .replace(/-/g, "")
+    .replace(/^ch(?=e|i)/, "s")
+    .replace(/ph/g, "f")
+    .replace(/c(?=[eiy])/g, "s")
+    .replace(/ck/g, "k")
+    .replace(/c/g, "k")
+    .replace(/qu/g, "kw")
+    .replace(/x/g, "ks")
+    .replace(/y/g, "i")
+    .replace(/(.)\1+/g, "$1")
+
+function editDistance(a: string, b: string): number {
+  let prev: number[] = Array.from({ length: b.length + 1 }, (_, j) => j)
+  for (let i = 1; i <= a.length; i++) {
+    const cur: number[] = [i]
+    for (let j = 1; j <= b.length; j++) {
+      const sub = (prev[j - 1] ?? 0) + (a[i - 1] === b[j - 1] ? 0 : 1)
+      cur[j] = Math.min((prev[j] ?? 0) + 1, (cur[j - 1] ?? 0) + 1, sub)
+    }
+    prev = cur
+  }
+  return prev[b.length] ?? 0
+}
+
+/**
+ * The model writes down what it heard, so spelling can differ from the word on screen ("selo" for "cello").
+ * Accept when it sounds the same or is one letter off (two for longer words).
+ */
+export function wordMatches(heard: string, expected: string): boolean {
+  if (heard === expected) return true
+  const a = soundKey(heard)
+  const b = soundKey(expected)
+  if (a === b) return true
+  return editDistance(a, b) <= (b.length >= 6 ? 2 : 1)
+}
+
 /**
  * Plain code turns the AI's observations into accept / reject / review.
  * Reject: wrong word, wrong finger count, a required step not done.
@@ -121,7 +160,7 @@ export function decide(input: {
   })
 
   // Liveness: a different word or finger count means it wasn't filmed for this claim.
-  if (wordHeard !== "not_audible" && wordHeard !== norm(challenge.word)) {
+  if (wordHeard !== "not_audible" && !wordMatches(wordHeard, norm(challenge.word))) {
     return out("reject", `The word heard was “${wordHeard}”, not “${challenge.word}”.`)
   }
   if (fingersShown !== null && fingersShown !== challenge.fingers) {

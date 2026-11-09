@@ -20,7 +20,7 @@ import {
   X,
 } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
-import type { LiveRun, NodeId } from "@/lib/server/live"
+import type { HistoryItem, LiveRun, NodeId } from "@/lib/server/live"
 import { cn } from "@/lib/utils"
 
 type NodeDef = { id: NodeId; title: string; tag: string; icon: LucideIcon }
@@ -60,7 +60,7 @@ const TITLE = Object.fromEntries(LANES.flatMap((l) => l.nodes.map((n) => [n.id, 
 >
 const ENDED = new Set(["rejected", "duplicate", "failed"])
 
-type State = "idle" | "active" | "done" | "fresh" | "skipped" | "failed"
+type State = "idle" | "active" | "done" | "fresh" | "skipped" | "failed" | "rejected"
 
 export function LiveMap() {
   const [run, setRun] = useState<LiveRun | null>(null)
@@ -113,20 +113,23 @@ export function LiveMap() {
     const age = lastAt ? now - Date.parse(lastAt) : Number.POSITIVE_INFINITY
     const ended =
       Boolean(failed) ||
+      Boolean(replay === null && run.rejected) ||
       done.has("licence") ||
       (run.clip ? ENDED.has(run.clip.status) && replay === null : false)
     const inProgress = replay !== null ? replay < run.log.length : !ended && age < 10 * 60_000
     const skipped = new Set(replay === null || done.has("hedera") ? run.skipped : [])
     const active = inProgress ? ORDER.find((id) => !done.has(id) && !skipped.has(id)) : undefined
+    const rejected = replay === null || done.has("gemini") ? run.rejected : null
     const state = (id: NodeId): State => {
       if (failed === id) return "failed"
+      if (id === "gemini" && rejected && done.has("gemini")) return "rejected"
       const at = done.get(id)
       if (at) return replay === null && now - Date.parse(at) < 6000 ? "fresh" : "done"
       if (skipped.has(id)) return "skipped"
       if (id === active) return "active"
       return "idle"
     }
-    return { log, state, inProgress, age, ended, lastAt }
+    return { log, state, inProgress, age, ended, lastAt, rejected }
   }, [run, replay, now])
 
   const start = run?.startedAt ? Date.parse(run.startedAt) : null
@@ -145,11 +148,13 @@ export function LiveMap() {
             ? "Can't reach the server. Retrying…"
             : replay !== null
               ? "Replaying the last run from its recorded events"
-              : view?.inProgress
-                ? "A clip is moving through the system right now"
-                : view?.lastAt
-                  ? `Waiting for the next clip · last run ${ago(now - Date.parse(view.lastAt))}`
-                  : "Waiting for the first clip"}
+              : view?.rejected && !view.inProgress
+                ? `Last clip not accepted: ${view.rejected}`
+                : view?.inProgress
+                  ? "A clip is moving through the system right now"
+                  : view?.lastAt
+                    ? `Waiting for the next clip · last run ${ago(now - Date.parse(view.lastAt))}`
+                    : "Waiting for the first clip"}
         </div>
         <div className="flex items-center gap-2">
           {run?.amount ? (
@@ -215,6 +220,8 @@ export function LiveMap() {
 
         <LogPanel log={view?.log ?? []} start={start} />
       </div>
+
+      <History items={run?.history ?? []} />
     </div>
   )
 }
@@ -243,6 +250,7 @@ function NodeCard({
         state === "fresh" && "border-signal bg-signal-soft",
         state === "done" && "border-success/50",
         state === "failed" && "border-danger",
+        state === "rejected" && "border-signal/60 bg-signal-soft",
       )}
     >
       <span
@@ -251,9 +259,10 @@ function NodeCard({
           isDone && "border-success/40 bg-success-soft text-success-text",
           state === "active" && "border-signal bg-signal text-signal-ink",
           state === "failed" && "border-danger bg-danger text-white",
+          state === "rejected" && "border-signal/50 bg-card text-signal-text",
         )}
       >
-        {state === "failed" ? (
+        {state === "failed" || state === "rejected" ? (
           <X className="size-4" />
         ) : isDone ? (
           <Check className="size-4" strokeWidth={2.6} />
@@ -270,9 +279,11 @@ function NodeCard({
               ? "Not needed: under 5 USDC"
               : state === "failed"
                 ? `${def.tag} · stopped`
-                : isDone && at && start
-                  ? `${def.tag} · +${((Date.parse(at) - start) / 1000).toFixed(1)} s`
-                  : def.tag}
+                : state === "rejected"
+                  ? `${def.tag} · not accepted`
+                  : isDone && at && start
+                    ? `${def.tag} · +${((Date.parse(at) - start) / 1000).toFixed(1)} s`
+                    : def.tag}
         </span>
       </span>
     </div>
@@ -352,4 +363,82 @@ function ago(ms: number) {
   const m = Math.round(s / 60)
   if (m < 60) return `${m} min ago`
   return `${Math.round(m / 60)} h ago`
+}
+
+function History({ items }: { items: HistoryItem[] }) {
+  if (items.length === 0) return null
+  return (
+    <section aria-label="Recent clips" className="rounded-[18px] border bg-card">
+      <div className="flex items-center justify-between border-b px-5 py-3.5">
+        <h2 className="text-[15px] font-semibold">Recent clips</h2>
+        <span className="text-[12px] text-muted-foreground">Newest first · every link is a public proof</span>
+      </div>
+      <ul className="divide-y">
+        {items.map((c) => {
+          const accepted = c.verdict === "accept"
+          const rejected = c.verdict === "reject" || c.status === "duplicate"
+          return (
+            <li key={c.id} className="flex flex-col gap-2 px-5 py-3.5 md:flex-row md:items-center md:gap-5">
+              <span className="w-[120px] shrink-0 text-[12.5px] text-muted-foreground tabular">
+                {new Date(c.at).toLocaleString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
+                })}
+              </span>
+              <span className="flex min-w-0 flex-1 items-center gap-2.5">
+                <span
+                  className={cn(
+                    "shrink-0 rounded-full px-2 py-0.5 text-[11.5px] font-semibold",
+                    accepted && "bg-success-soft text-success-text",
+                    rejected && "bg-signal-soft text-signal-text",
+                    !accepted && !rejected && "bg-secondary text-muted-foreground",
+                  )}
+                >
+                  {accepted
+                    ? "Accepted"
+                    : c.status === "duplicate"
+                      ? "Duplicate"
+                      : rejected
+                        ? "Not accepted"
+                        : c.status === "failed"
+                          ? "Check failed"
+                          : "Checking"}
+                </span>
+                <span className="truncate text-[13.5px] text-muted-foreground">
+                  {accepted
+                    ? c.amount
+                      ? `Paid ${c.amount} USDC${c.approvedByHuman ? " · approved with World ID" : " · paid by the agent"}`
+                      : "Waiting for the agent to pay"
+                    : (c.reason ?? "")}
+                </span>
+              </span>
+              <span className="flex shrink-0 flex-wrap items-center gap-1.5">
+                {c.proofs.map((p) => (
+                  <a
+                    key={p.label}
+                    href={p.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-0.5 rounded-full border px-2 py-0.5 text-[11.5px] font-medium hover:border-signal hover:text-signal-text"
+                  >
+                    {p.label}
+                    <ArrowUpRight className="size-3" />
+                  </a>
+                ))}
+                <a
+                  href={`/submissions/${c.id}`}
+                  className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-[11.5px] font-medium hover:bg-foreground hover:text-background"
+                >
+                  Open
+                </a>
+              </span>
+            </li>
+          )
+        })}
+      </ul>
+    </section>
+  )
 }
