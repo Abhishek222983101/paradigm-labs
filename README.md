@@ -8,7 +8,7 @@
 
 [**Live app**](https://paradigmlabs.app) · [**Watch the demo**](https://paradigmlabs.app/demo) · [**Live system map**](https://paradigmlabs.app/live) · [**ETHGlobal showcase**](https://ethglobal.com/showcase/paradigm-2ovdu) · [**Android app**](https://github.com/Abhishek222983101/paradigm-labs/releases/latest)
 
-[![Paradigm demo: the full flow end to end](docs/media/demo-poster.jpg)](https://paradigmlabs.app/demo)
+[![Paradigm demo: the full flow end to end](docs/media/paradigm-hero.jpg)](https://paradigmlabs.app/demo)
 
 <sub>Under 4 minutes, narrated with captions. Click to watch on paradigmlabs.app/demo, or download it from the <a href="https://github.com/Abhishek222983101/paradigm-labs/releases/latest">latest release</a>.</sub>
 
