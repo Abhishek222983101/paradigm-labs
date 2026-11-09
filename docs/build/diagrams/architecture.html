@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>ADX — System architecture</title>
+<style>
+:root{--ink:#18181b;--mut:#71717a;--line:#d4d4d8;--bg:#fafafa;--or:#FE7446;--card:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 Inter,Helvetica,Arial,sans-serif;width:1800px;padding:36px 40px}
+h1{font-size:30px;letter-spacing:-.02em}h1 span{color:var(--or)}
+.sub{color:var(--mut);margin:4px 0 22px}
+.layer{display:grid;grid-template-columns:150px 1fr;gap:16px;margin-bottom:14px}
+.lab{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);padding-top:14px}
+.row{display:grid;gap:12px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px}
+.card h3{font-size:15px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card p{color:#3f3f46;font-size:12.5px}
+.card ul{margin:6px 0 0 16px;font-size:12px;color:#3f3f46}
+.dark{background:#18181b;color:#fff;border-color:#18181b}.dark p,.dark ul{color:#d4d4d8}
+.acc{border-color:var(--or);background:#fff7f3}
+.pub{background:#f4f4f5}
+.tag{font-size:10px;font-weight:700;border-radius:999px;padding:2px 8px;background:#e4e4e7;color:#3f3f46}
+.tag.o{background:var(--or);color:#fff}
+.arrow{text-align:center;color:var(--mut);font-size:12px;margin:2px 0 10px 166px}
+.flow{margin-top:22px;display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+.step{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px;position:relative}
+.step .n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--or);color:#fff;font-size:13px;margin-bottom:6px}
+.step h4{font-size:13.5px;margin-bottom:3px}.step p{font-size:12px;color:#3f3f46}
+.step .who{font-size:10.5px;color:var(--mut);margin-top:6px;font-weight:600}
+.legend{display:flex;gap:18px;margin-top:16px;font-size:12px;color:var(--mut)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px;border:1.5px solid var(--line)}
+</style></head><body>
+<h1>ADX · Agentic Data Exchange <span>— system architecture</span></h1>
+<div class="sub">AI buyer agents buy verified real-world demonstrations from unique humans. Arkiv = shared records · Swarm = encrypted clips · Hedera = x402 payments · World ID = human checks.</div>
+
+<div class="layer"><div class="lab">People &amp; agents</div>
+ <div class="row" style="grid-template-columns:repeat(4,1fr)">
+  <div class="card acc"><h3>📱 Contributor</h3><p>Phone browser. Embedded wallet sealed by passkey (same key = Arkiv owner + Hedera account).</p></div>
+  <div class="card acc"><h3>🤖 Buyer agent</h3><p>Robot team's AI. Posts tasks from model failures, pays per accepted clip under a spending policy.</p></div>
+  <div class="card acc"><h3>🧑‍💼 Buyer's human</h3><p>Sets budget + threshold. Approves big payouts on their phone with World ID Agent Pass.</p></div>
+  <div class="card acc"><h3>🛰 Any outside agent</h3><p>Reads everything straight from Arkiv by owner wallet. No API key, no permission.</p></div>
+ </div></div>
+<div class="arrow">▼ HTTPS · x402 · passkeys · World ID</div>
+
+<div class="layer"><div class="lab">Our services</div>
+ <div class="row" style="grid-template-columns:1.3fr 1.3fr 1.2fr .9fr">
+  <div class="card dark"><h3>apps/web <span class="tag">Vercel · Next.js 16</span></h3><p>UI + API. No video work here.</p>
+   <ul><li>Board · task · recorder · live status · me · console · explorer · proofs</li><li>Claim API: IDKit verify → Neon → <b>adx.claim</b></li><li><b>x402 endpoint</b> /api/x402/clip/:key → onAfterSettle: receipt + licence</li><li>SSE live status from events</li></ul></div>
+  <div class="card dark"><h3>apps/worker <span class="tag">Railway · Node 22</span></h3><p>Upload endpoint + job runner.</p>
+   <ul><li>ffprobe · ffmpeg 3 frames → dHash (sharp)</li><li>Dedup vs all buyers on Arkiv</li><li><b>Gemini 3 Flash</b> watches clip + audio → strict JSON</li><li>Code rules decide · AES-256-GCM · Swarm · Arkiv</li></ul></div>
+  <div class="card dark"><h3>apps/agent <span class="tag">Railway · Node 22</span></h3><p>The buyer agent.</p>
+   <ul><li>Brain: Claude Haiku (task text only)</li><li><b>Policy engine</b> (code): caps, budget, allowlist, threshold</li><li>x402 client (holds Hedera key)</li><li>Agent Pass device flow · HCS spend log</li></ul></div>
+  <div class="card dark"><h3>infra <span class="tag">Railway private</span></h3>
+   <ul><li><b>Bee 2.8.3</b> node, our postage batch</li><li>rpc-router (Sepolia)</li><li>No public domains</li></ul></div>
+ </div></div>
+<div class="arrow">▼ private data stays private · public data goes on-chain</div>
+
+<div class="layer"><div class="lab">Private</div>
+ <div class="row" style="grid-template-columns:1fr">
+  <div class="card"><h3>Neon Postgres <span class="tag">private</span></h3><p>World ID nullifiers <b>UNIQUE(task, nullifier)</b> · clip AES keys · jobs (SKIP LOCKED) · payments · approvals · live events. Never on-chain.</p></div>
+ </div></div>
+
+<div class="layer"><div class="lab">Public networks</div>
+ <div class="row" style="grid-template-columns:1.4fr 1fr 1.1fr 1fr">
+  <div class="card pub acc"><h3>Arkiv Rabdi <span class="tag o">core</span></h3><p>8 entity types, each with an owner wallet and an expiry:</p>
+   <ul><li>verifier (24 h heartbeat) · task (expires at deadline)</li><li>claim (2 h window) · submission · verification</li><li>receipt · <b>licence (owned by contributor)</b> · manifest</li></ul></div>
+  <div class="card pub"><h3>Swarm</h3><p>Clip ciphertext only (encrypted on our side). Plain 64-hex ref stored in <b>adx.submission.swarmRef</b>. Our own batch on Sepolia.</p></div>
+  <div class="card pub"><h3>Hedera testnet</h3><p>x402 USDC settlement via facilitator · contributor payouts · <b>HCS spend log</b> · Mirror Node reads. No Solidity.</p></div>
+  <div class="card pub"><h3>World ID</h3><p><b>IDKit</b> Selfie Check: one human per slot. <b>Agent Pass</b>: fresh Orb + face approval above threshold.</p></div>
+ </div></div>
+
+<div class="flow">
+ <div class="step"><span class="n">1</span><br><h4>Post task</h4><p>Agent turns a failure into a task → <b>adx.task</b>, expires at deadline.</p><div class="who">agent → Arkiv</div></div>
+ <div class="step"><span class="n">2</span><br><h4>Claim slot</h4><p>World ID proof → nullifier unique per task → <b>adx.claim</b> (2 h) + challenge.</p><div class="who">phone → web → World, Neon, Arkiv</div></div>
+ <div class="step"><span class="n">3</span><br><h4>Record</h4><p>15–30 s clip with spoken word + fingers. Upload straight to the worker.</p><div class="who">phone → worker</div></div>
+ <div class="step"><span class="n">4</span><br><h4>Verify</h4><p>Dedup across buyers ∥ Gemini verdict → code decides → encrypt → Swarm → Arkiv.</p><div class="who">worker → Gemini, Swarm, Arkiv</div></div>
+ <div class="step"><span class="n">5</span><br><h4>Pay (x402)</h4><p>402 → policy → auto-pay USDC. Above threshold: Agent Pass approval first.</p><div class="who">agent → web → Hedera</div></div>
+ <div class="step"><span class="n">6</span><br><h4>Receipt + licence</h4><p>Only after settlement: <b>adx.receipt</b>, <b>adx.licence</b> handed to the contributor, key released.</p><div class="who">web → Arkiv, Neon, HCS</div></div>
+ <div class="step"><span class="n">7</span><br><h4>Own &amp; verify</h4><p>Contributor can withdraw the licence. Any agent can query it all on Arkiv.</p><div class="who">contributor, outside agent → Arkiv</div></div>
+</div>
+<div class="legend"><span><i style="background:#fff7f3;border-color:#FE7446"></i>people / Arkiv core</span><span><i style="background:#18181b;border-color:#18181b"></i>our services</span><span><i style="background:#fff"></i>private (Neon)</span><span><i style="background:#f4f4f5"></i>public networks</span></div>
+</body></html>

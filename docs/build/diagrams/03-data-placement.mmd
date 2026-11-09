@@ -1,0 +1,17 @@
+flowchart LR
+  subgraph Public[PUBLIC · anyone can read]
+    A1[Arkiv: tasks, claims, verdicts,<br/>receipts, licences, manifests,<br/>verifier listing]
+    A2[Swarm: clip ciphertext,<br/>rubric JSON, manifest JSON]
+    A3[Hedera: payments, HCS spend log]
+  end
+  subgraph Private[PRIVATE · Neon only]
+    P1[World ID nullifiers]
+    P2[Clip AES keys]
+    P3[Jobs, payments, approvals, events]
+  end
+  subgraph Device[DEVICE ONLY]
+    D1[Contributor private key<br/>sealed by passkey PRF]
+  end
+  subgraph Never[NEVER STORED]
+    N1[Raw video after encryption,<br/>names, emails, phone numbers]
+  end

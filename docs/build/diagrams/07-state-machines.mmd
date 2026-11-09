@@ -1,0 +1,31 @@
+stateDiagram-v2
+  direction LR
+  state "Task" as T {
+    [*] --> open : buyer posts
+    open --> filled : filled == slots
+    open --> [*] : deadline expiry
+  }
+  state "Claim" as C {
+    [*] --> active : World ID ok
+    active --> submitted : clip uploaded
+    active --> [*] : 2 h expiry
+  }
+  state "Submission" as S {
+    [*] --> pending
+    pending --> accepted
+    pending --> rejected
+    pending --> review
+  }
+  state "Payment" as P {
+    [*] --> quoted
+    quoted --> settling : auto
+    quoted --> approving : above threshold
+    approving --> settling : approved
+    approving --> denied : denied or expired
+    settling --> settled
+    settling --> failed
+  }
+  state "Licence" as L {
+    [*] --> granted : after settle
+    granted --> [*] : withdrawn or term ends
+  }

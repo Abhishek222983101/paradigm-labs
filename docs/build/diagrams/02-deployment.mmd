@@ -1,0 +1,24 @@
+flowchart LR
+  subgraph Internet
+    Phone[Phones / laptops]
+    Judges[Judges + outside agents]
+  end
+  subgraph Vercel
+    WEB[adx-paradigm.vercel.app<br/>Fluid compute, Node runtime]
+  end
+  subgraph Railway["Railway project adx (private network *.railway.internal)"]
+    WKR[worker<br/>public: upload.* domain]
+    AGT[agent<br/>public: status API, auth token]
+    BEE[bee :1633<br/>NO public domain]
+    RR[rpc-router :8545<br/>NO public domain]
+  end
+  NEON[(Neon Postgres<br/>ap-southeast-1)]
+  Phone --> WEB
+  Phone -->|PUT clip| WKR
+  WEB --> NEON
+  WKR --> NEON
+  AGT --> NEON
+  WKR -->|http://bee.railway.internal:1633| BEE
+  BEE -->|http://rpc-router.railway.internal:8545| RR
+  AGT -->|x402| WEB
+  Judges -->|JSON-RPC| ARKIV[(Arkiv RPC)]

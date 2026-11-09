@@ -1,0 +1,22 @@
+sequenceDiagram
+  autonumber
+  participant P as Phone (web)
+  participant W as apps/web API
+  participant WD as World (developer.world.org)
+  participant DB as Neon
+  participant A as Arkiv
+  P->>W: POST /api/world/rp-signature {action:"claim-task"}
+  W-->>P: rp_context (signed with WORLD_SIGNING_KEY)
+  P->>P: IDKitRequestWidget (Selfie Check), signal = taskKey:walletAddr
+  P->>W: POST /api/claims {taskKey, idkitResult, wallet, walletSig}
+  W->>WD: POST /api/v4/verify/rp_15b590932690a33e (result unmodified)
+  WD-->>W: {success, nullifier, environment}
+  W->>DB: INSERT claims_private (task_key, nullifier) UNIQUE
+  alt duplicate nullifier for this task
+    W-->>P: 409 "You already hold a slot on this task"
+  else slots full (count active claims on Arkiv ≥ slots)
+    W-->>P: 409 "All slots are taken"
+  else ok
+    W->>A: createEntity(adx.claim, {task, status:"active", slot, claimant, challenge}, 2h)
+    W-->>P: {claimKey, challenge:"say MANGO, hold up 3 fingers", uploadToken}
+  end

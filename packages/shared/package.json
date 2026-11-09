@@ -1,0 +1,36 @@
+{
+  "name": "@adx/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./env": "./src/env.ts",
+    "./crypto": "./src/crypto.ts",
+    "./arkiv": "./src/arkiv/index.ts",
+    "./challenge": "./src/challenge.ts",
+    "./upload-token": "./src/upload-token.ts",
+    "./rubric": "./src/rubric.ts",
+    "./swarm": "./src/swarm.ts",
+    "./events": "./src/events.ts",
+    "./claim": "./src/claim.ts",
+    "./hedera": "./src/hedera.ts",
+    "./verdict": "./src/verdict.ts",
+    "./policy": "./src/policy.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@arkiv-network/sdk": "1.0.1",
+    "@hiero-ledger/sdk": "2.90.1",
+    "viem": "2.57.16",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "22",
+    "typescript": "5.9.3",
+    "vitest": "5.1.0"
+  }
+}

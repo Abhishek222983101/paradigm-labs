@@ -1,0 +1,40 @@
+sequenceDiagram
+  autonumber
+  participant G as Buyer agent
+  participant PO as Policy engine
+  participant A as Arkiv
+  participant X as /api/x402/clip/:key
+  participant F as Facilitator (x402.org)
+  participant HE as Hedera
+  participant WI as World IdP
+  participant HU as Buyer's human
+  G->>A: read adx.verification verdict=accept (ownedBy verifier) + adx.verifier listing
+  G->>X: GET
+  X-->>G: 402 {price, payTo, asset 0.0.429274, network hedera:testnet}
+  G->>PO: decide(price, payTo, listing, budget)
+  alt price ≤ threshold and checks pass
+    PO-->>G: APPROVE(auto)
+  else price > threshold
+    PO-->>G: NEEDS_HUMAN
+    G->>WI: POST /api/v1/device_authorization (acr orb-face, max_age=0)
+    WI-->>G: user_code, verification_uri_complete
+    G-->>HU: QR / push link: "Pay 50 USDC to contributor #2 for clip T-042/2?"
+    HU->>WI: approve with World ID (fresh face check)
+    loop poll
+      G->>WI: POST /api/v1/token (device_code)
+    end
+    alt approved
+      WI-->>G: id_token (acr, auth_time) → validate → APPROVE(agent-pass)
+    else access_denied / expired_token
+      WI-->>G: error → DENY → HCS log, stop (nothing paid)
+    end
+  end
+  G->>X: GET with PAYMENT-SIGNATURE (signed USDC transfer)
+  X->>F: verify
+  X->>X: handler builds response (key, ref) — no side effects
+  X->>F: settle
+  F->>HE: CryptoTransfer USDC
+  HE-->>F: tx id
+  X->>X: onAfterSettle → adx.receipt + adx.licence(transfer to contributor) + Neon payment + HCS
+  X-->>G: 200 {swarmRef, key, cipherSha256, licenceKey} + PAYMENT-RESPONSE
+  G->>G: download ciphertext, decrypt, verify sha256 vs Arkiv

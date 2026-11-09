@@ -1,0 +1,29 @@
+sequenceDiagram
+  autonumber
+  participant P as Phone
+  participant K as worker /upload
+  participant DB as Neon
+  participant R as runner
+  participant AI as Gemini 3 Flash
+  participant B as Bee node
+  participant A as Arkiv
+  P->>K: PUT /upload/:token (stream, ≤ 60 MB)
+  K->>DB: job(status=queued) + event "uploaded"
+  R->>DB: SELECT … FOR UPDATE SKIP LOCKED
+  R->>R: ffprobe (duration, streams) · ffmpeg 3 frames → sharp dHash
+  R->>A: query adx.submission where dhashA|B|C bucket matches (all buyers)
+  alt Hamming < 10 vs any match
+    R->>A: adx.submission(status=rejected) + adx.verification(verdict=reject, reason=duplicate)
+  else unique
+    R->>AI: full clip (video + audio) + rubric + challenge → schema JSON
+    R->>R: rules: liveness, steps, timestamps → accept / reject / review
+    R->>R: AES-256-GCM encrypt
+    R->>B: POST /bytes (swarm-postage-batch-id) → 64-hex ref
+    R->>DB: clip_keys(submission, key) · delete raw
+    par different signers
+      R->>A: adx.submission (platform-worker wallet)
+    and
+      R->>A: adx.verification (verifier wallet)
+    end
+  end
+  R->>DB: events (each step) → SSE to phone

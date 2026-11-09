@@ -1,0 +1,65 @@
+flowchart TB
+  classDef person fill:#fff7ed,stroke:#FE7446,color:#111
+  classDef ours fill:#111,stroke:#111,color:#fff
+  classDef chain fill:#f4f4f5,stroke:#52525b,color:#111
+  classDef ai fill:#eef2ff,stroke:#4f46e5,color:#111
+
+  subgraph PEOPLE[People and agents]
+    C[📱 Contributor<br/>phone browser + embedded wallet]:::person
+    H[🧑‍💼 Buyer's human<br/>approves big spends]:::person
+    OA[🛰 Outside agent<br/>curl / script]:::person
+  end
+
+  subgraph VERCEL[Vercel · apps/web · Next.js 16]
+    UI[UI: board · recorder · status · me · console · explorer · proofs]:::ours
+    API[API routes: tasks · claims · upload token · SSE · licences]:::ours
+    X4[x402 endpoint<br/>/api/x402/clip/:key<br/>onAfterSettle hook]:::ours
+  end
+
+  subgraph RAILWAY[Railway · project adx]
+    WK[apps/worker<br/>upload endpoint + job runner<br/>ffmpeg · sharp dHash · Gemini · AES-GCM]:::ours
+    AG[apps/agent<br/>brain: Claude Haiku<br/>policy · pay · approvals · HCS]:::ours
+    BEE[infra/bee<br/>Bee 2.8.3 light node<br/>batch c0cc5436…]:::ours
+    RR[infra/rpc-router<br/>Sepolia RPC]:::ours
+  end
+
+  subgraph PRIVATE[Private data · Neon]
+    PG[(Postgres<br/>nullifiers · clip keys · jobs<br/>payments · approvals · events)]:::ours
+  end
+
+  subgraph PUBLIC[Public networks]
+    ARK[(Arkiv Rabdi<br/>verifier · task · claim · submission<br/>verification · receipt · licence · manifest)]:::chain
+    SW[(Swarm<br/>AES-GCM ciphertext)]:::chain
+    HED[(Hedera testnet<br/>x402 USDC · HTS · HCS · Mirror Node)]:::chain
+    WID[World ID<br/>IDKit verify v4 · IdP Agent Pass]:::chain
+    SEP[(Sepolia<br/>postage batch)]:::chain
+  end
+
+  subgraph MODELS[AI providers]
+    GE[Gemini 3 Flash<br/>clip verifier]:::ai
+    CL[Claude Haiku 5.5<br/>agent text]:::ai
+  end
+
+  C -->|1 browse / claim| UI
+  UI --> API
+  API -->|verify proof| WID
+  API -->|nullifier UNIQUE| PG
+  API -->|adx.claim| ARK
+  C -->|2 clip upload, single-use token| WK
+  WK --> PG
+  WK -->|full clip + rubric| GE
+  AG -->|draft tasks| CL
+  WK -->|dedup query| ARK
+  WK -->|ciphertext| BEE --> SW
+  BEE --> RR --> SEP
+  WK -->|adx.submission + adx.verification| ARK
+  AG -->|adx.task, read verdicts, licences| ARK
+  AG -->|3 GET → 402 → pay| X4
+  X4 -->|settle via facilitator| HED
+  X4 -->|receipt + licence| ARK
+  X4 --> PG
+  AG -->|approval above threshold| WID
+  WID -->|push to phone| H
+  AG -->|spend log| HED
+  OA -->|4 query by owner| ARK
+  UI -->|live status SSE| PG

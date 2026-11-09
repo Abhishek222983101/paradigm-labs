@@ -1,0 +1,221 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  Paradigm design tokens (UI/UX brief §Color palette, system architecture §14).
+  Neutral zinc greys, one signal colour: Arkiv orange #FE7446, used only for the primary action
+  and for "this is on-chain" moments. Orange carries dark text (7:1 contrast), never white.
+*/
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-signal: var(--signal);
+  --color-signal-ink: var(--signal-ink);
+  --color-signal-soft: var(--signal-soft);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-sunken: var(--sunken);
+  --color-signal-text: var(--signal-text);
+  --color-success-soft: var(--success-soft);
+  --color-success-text: var(--success-text);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-geist-sans);
+  --font-serif: var(--font-instrument);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+:root {
+  /* Paper design (07 Nov): warm cream page, white cards, ink text, one orange signal. */
+  --background: #f6f0e3;
+  --foreground: #111214;
+  --card: #ffffff;
+  --card-foreground: #111214;
+  --popover: #ffffff;
+  --popover-foreground: #111214;
+  --primary: #111214;
+  --primary-foreground: #ffffff;
+  --secondary: #efe7d9;
+  --secondary-foreground: #111214;
+  --muted: #efe7d9;
+  --muted-foreground: #6b7076;
+  --accent: #efe7d9;
+  --accent-foreground: #111214;
+  --destructive: #dc2626;
+  --border: #e3dccd;
+  --input: #ddd5c5;
+  --ring: #fe7446;
+  --sunken: #efe7d9;
+
+  --signal: #fe7446;
+  --signal-ink: #1c0a03;
+  --signal-soft: #fff0ea;
+  --signal-text: #c2410c;
+  --success: #16a34a;
+  --success-soft: #e9f7ee;
+  --success-text: #15803d;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --radius: 18px;
+}
+
+.dark {
+  /* Default theme: near-black ink with a faint dot grid, white primary, one orange signal. */
+  --background: #0a0a0b;
+  --foreground: #f2f2f3;
+  --card: #121214;
+  --card-foreground: #f2f2f3;
+  --popover: #17171a;
+  --popover-foreground: #f2f2f3;
+  --primary: #f2f2f3;
+  --primary-foreground: #0a0a0b;
+  --secondary: #1c1c20;
+  --secondary-foreground: #f2f2f3;
+  --muted: #1c1c20;
+  --muted-foreground: #9c9ca5;
+  --accent: #1c1c20;
+  --accent-foreground: #f2f2f3;
+  --destructive: #f0545a;
+  --border: #242428;
+  --input: #2c2c31;
+  --ring: #fe7446;
+  --sunken: #17171a;
+
+  --signal: #fe7446;
+  --signal-ink: #1c0a03;
+  --signal-soft: #2a160d;
+  --signal-text: #ff9a76;
+  --success: #3fb27f;
+  --success-soft: #11251b;
+  --success-text: #5fd39c;
+  --warning: #f5b83d;
+  --danger: #f0545a;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/60;
+  }
+  html {
+    @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "cv11", "ss01", "ss03";
+    letter-spacing: -0.006em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--signal) 35%, transparent);
+  }
+}
+
+@layer utilities {
+  .dot-grid {
+    background-image: radial-gradient(
+      color-mix(in oklab, var(--foreground) 9%, transparent) 1px,
+      transparent 1px
+    );
+    background-size: 18px 18px;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom), 0px);
+  }
+  .pt-safe {
+    padding-top: max(env(safe-area-inset-top), 0px);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* Landing: "Built on" marquee and the isometric hero figure (no card, blends into the page). */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  animation: marquee 36s linear infinite;
+}
+.hero-iso {
+  background: transparent !important;
+  border-color: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+.hero-iso .ik-footer {
+  opacity: 0.75;
+  padding: 0 4px;
+}
+.dark .hero-iso {
+  filter: drop-shadow(0 30px 50px rgba(0, 0, 0, 0.45));
+}
+
+/* Live map: the wire into the module that is working right now. */
+@keyframes live-wire {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.live-wire {
+  background: var(--signal) !important;
+  animation: live-wire 1s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,19 @@
+gantt
+  dateFormat HH:mm
+  axisFormat %H:%M
+  title Fri 6 Nov → Sat 7 Nov (IST)
+  section Foundation
+  P0 Foundation           :p0, 11:45, 45m
+  P1 Arkiv core           :p1, after p0, 75m
+  section Parallel tracks
+  P2 Identity             :p2, after p1, 120m
+  P3 Capture & upload     :p3, after p1, 90m
+  P4 Verification         :p4, after p3, 150m
+  section Money
+  P5 Payments             :p5, after p4, 120m
+  P6 Agent + approvals    :p6, after p5, 150m
+  section Finish
+  P7 Licences + outside   :p7, after p6, 75m
+  P8 Console + polish     :p8, after p7, 120m
+  P9 Eval + hardening     :p9, after p8, 90m
+  P10 Docs + video        :p10, after p9, 150m
