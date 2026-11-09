@@ -14,14 +14,14 @@
 | `adx.licence` | `licensee`, `submission`, `status` | **The contributor**, via `changeOwnership` after creation | 90 days | The person who filmed the clip owns the licence record. Only they could delete or extend it |
 | `adx.verifier` | `skill`, `status = live`, owner = verifier | Verifier wallet | 24 h, extended by heartbeat (`extendEntity`) | If our verifier stops, its listing disappears and agents stop sending work |
 
-**Trust model.** Anyone can write an entity called `adx.task`. Every read in our app filters by `$owner` against the four writer wallets in the [README](../README.md#arkiv). Spoofed records simply never show up. Filters have no `NOT`, so every status is a positive value we query directly (`open`, `active`, `live`).
+**Trust model.** Anyone can write an entity called `adx.task`. Every read in our app filters by `$owner` against the four writer wallets in the [README](../../README.md#arkiv). Spoofed records simply never show up. Filters have no `NOT`, so every status is a positive value we query directly (`open`, `active`, `live`).
 
 ## Does each Arkiv feature change something users see?
 
 | Arkiv feature | What the user sees | Where |
 |---|---|---|
 | Owner-filtered query (`ownedBy`) | The task board (`/tasks`) lists only real tasks from our buyer agent, highest reward first | `packages/shared/src/arkiv/queries.ts` `openTasks` |
-| Expiry on tasks | A task disappears from the board at its deadline | `apps/agent` + `scripts/seed-arkiv.ts` |
+| Expiry on tasks | A task disappears from the board at its deadline | `apps/agent` + `scripts/arkiv/seed-arkiv.ts` |
 | Expiry on claims + live count | "1/3 slots taken" on the task page; a slot reopens 2 h after an abandoned claim | `activeClaimsForTask` |
 | Indexed fingerprint buckets | A re-uploaded or copied clip is rejected as "Matches a clip already on Arkiv" on the status page | `submissionsByBucket` in `apps/worker/src/pipeline/run.ts` |
 | Entity reads by key | The status page and `/explorer` show the verdict, score and evidence for a clip, with links to the Arkiv explorer | `/submissions/[key]`, `/explorer` |

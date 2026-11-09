@@ -2,7 +2,7 @@
 // No Paradigm code, no API, no keys: only the public Rabdi JSON-RPC and the four public writer wallets.
 // It prints the same state the app shows (task board, live claims, verdicts, payments, live verifiers).
 //
-//   pnpm outside-agent            (or: npx tsx scripts/outside-agent.ts)
+//   pnpm outside-agent            (or: npx tsx scripts/ops/outside-agent.ts)
 
 const RPC = "https://rpc.rabdi.db-chain.testnet.arkiv.network"
 const EXPLORER = "https://rabdi.explorer.arkiv.network/entity"

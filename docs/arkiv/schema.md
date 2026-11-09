@@ -141,4 +141,4 @@ publicClient.select({ $key: true, title: true, reward: true, deadline: true })
   .fetch()
 ```
 
-A `curl` version against the public Rabdi JSON-RPC (no key needed) is in the [README](../README.md#arkiv).
+A `curl` version against the public Rabdi JSON-RPC (no key needed) is in the [README](../../README.md#arkiv).

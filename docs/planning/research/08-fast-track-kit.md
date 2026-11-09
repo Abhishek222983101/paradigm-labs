@@ -1,7 +1,7 @@
 # 08 — Fast-track kit: what we may legally reuse, per module
 
 > **Checked:** 5 Nov 2026 (morning IST) against the GitHub API (`license.spdx_id`, `pushed_at`, `archived`), the npm registry (`npm view`), and the official docs (via Exa). Nothing was cloned or run.
-> **ETHGlobal rule:** "Any prior project-specific code, designs, or assets are not allowed unless they're from public libraries or starter kits." So we only take three kinds of thing: (a) npm libraries, (b) official sponsor or vendor starters and examples, (c) permissively licensed OSS (MIT, Apache-2.0, BSD, ISC). We keep the licence notice and credit the source in `AI_USAGE.md` / `THIRD-PARTY-NOTICES.md`.
+> **ETHGlobal rule:** "Any prior project-specific code, designs, or assets are not allowed unless they're from public libraries or starter kits." So we only take three kinds of thing: (a) npm libraries, (b) official sponsor or vendor starters and examples, (c) permissively licensed OSS (MIT, Apache-2.0, BSD, ISC). We keep the licence notice and credit the source in `docs/AI_USAGE.md` / `THIRD-PARTY-NOTICES.md`.
 > **"Last push"** is the repo's `pushed_at`. **UNVERIFIED** means I did not confirm it against a primary source.
 > **New since doc 02 (3 Nov):** `@x402/*` went from **2.29.0 to 2.30.0** (4 Nov), and the Vercel AI SDK is now **v7** (`ai` 7.0.163). Agent Kit's AI SDK adapter requires `ai ^7.0.37`, and `@x402/next` requires **Next ≥16.4.1**. Gemini's recommended API is now the **Interactions API** (`ai.interactions.create`), and `generateContent` is "legacy, fully supported".
 

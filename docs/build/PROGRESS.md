@@ -73,7 +73,7 @@ Every task, verdict, receipt and licence is a public record on **Arkiv**, so any
 | Monorepo tooling | `package.json`, `tsconfig.base.json`, `biome.json`, `vitest.config.ts` | One repo, several apps sharing code. Strict TypeScript, one linter/formatter (Biome), one test runner (Vitest). |
 | Shared package | `packages/shared/` | Code used by the website, the worker and the agent: Arkiv schemas, safety guard, crypto, env checks. |
 | Env validation | `packages/shared/src/env.ts` | Each service lists the settings it needs. A missing setting makes it fail at start-up with the *name* (never the value). |
-| Health check | `scripts/doctor.ts` → `pnpm run doctor` | One command checks every outside service and prints a ✓/✗ table. |
+| Health check | `scripts/ops/doctor.ts` → `pnpm run doctor` | One command checks every outside service and prints a ✓/✗ table. |
 | Private database | `packages/db/src/schema.ts` | 9 tables in Neon: private claim records (World ID nullifiers), upload tokens (hashed), clip encryption keys, payments, approvals, a live event log, rate limits. |
 | Design system | `apps/web/src/app/globals.css`, `components/ui/*` | Grey/black base, light + dark themes, one accent colour (Arkiv orange `#FE7446`) for main actions and on-chain moments. shadcn/ui components on Radix. |
 | App shell | `apps/web/src/app/layout.tsx`, `components/shell/*` | Header with logo and theme toggle; a phone-style bottom bar (Tasks · Record · Me · Console); PWA manifest, so it can be added to the home screen. |
@@ -111,8 +111,8 @@ Every task, verdict, receipt and licence is a public record on **Arkiv**, so any
 | Guard | `packages/shared/src/arkiv/guard.ts` | Blocks secret-looking data from becoming public; error messages never repeat the value |
 | Queue + writer | `queue.ts`, `writer.ts` | The only way the code writes to Arkiv: guard → per-wallet line → retry/reconcile |
 | Named queries | `queries.ts` | Every read the app makes, by name (open tasks, task by key, active claims, duplicate check, live verifiers, totals) |
-| Seed | `scripts/seed-arkiv.ts` → `pnpm seed:arkiv` | Publishes the verifier listing and the towel task; rubric goes on Swarm too |
-| Roundtrip test | `scripts/arkiv-roundtrip.ts` | Live test of all 8 types, the guard, and 10 parallel writes |
+| Seed | `scripts/arkiv/seed-arkiv.ts` → `pnpm seed:arkiv` | Publishes the verifier listing and the towel task; rubric goes on Swarm too |
+| Roundtrip test | `scripts/arkiv/arkiv-roundtrip.ts` | Live test of all 8 types, the guard, and 10 parallel writes |
 | Task board | `apps/web/src/app/tasks/page.tsx` | Open tasks read straight from Arkiv, refreshed every ~5 s |
 | Task detail | `apps/web/src/app/tasks/[key]/page.tsx` | Summary, numbered steps, setup tips, slots, countdown, links to the Arkiv record and the rubric on Swarm |
 | Explorer | `apps/web/src/app/explorer/page.tsx` | Judges pick a query, see the exact SDK code and the live JSON, and click through to the Arkiv explorer |
@@ -135,7 +135,7 @@ Every task, verdict, receipt and licence is a public record on **Arkiv**, so any
 
 **Known limits / next**
 - Each Arkiv write takes ~6.5 s (it waits for confirmation). The claim screen will show progress so this feels intentional.
-- The live URL needs the server env vars on Vercel. **One-time step for Abhishek:** run `bash scripts/vercel-env.sh` (copies names from `.env` to Vercel without printing values). Until then the live board says "Syncing with Arkiv…" rather than breaking.
+- The live URL needs the server env vars on Vercel. **One-time step for Abhishek:** run `bash scripts/ops/vercel-env.sh` (copies names from `.env` to Vercel without printing values). Until then the live board says "Syncing with Arkiv…" rather than breaking.
 
 ### P-UI Every screen ✅ (Fri 6 Nov, 16:15–16:45 IST)
 

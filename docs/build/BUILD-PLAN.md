@@ -76,7 +76,7 @@ Status: **Not run** · **Passed** · **Failed**. Only mark Passed after actually
 ## Sponsor deliverables
 | Sponsor | Deliverable | Status |
 |---|---|---|
-| ETHGlobal | Public repo, steady commits, `AI_USAGE.md`, planning docs in repo, 2–4 min video | In progress |
+| ETHGlobal | Public repo, steady commits, `docs/AI_USAGE.md`, planning docs in repo, 2–4 min video | In progress |
 | Hedera | README: setup, architecture, payment flow, settled tx ID; video with HashScan link | Tx ID ready |
 | Arkiv | README writer wallets + runnable query; `/arkiv/schema.md`, `friction.md`, `reach.md`, `why-arkiv.md`, `how-you-use-arkiv.md` | schema drafted |
 | Swarm bonus | `/arkiv/swarm.md`: what's where, entity key ↔ Swarm ref link, batch ID + buyer wallet, Bee node, files, steps, demo timestamp, friction | Batch + node ready |

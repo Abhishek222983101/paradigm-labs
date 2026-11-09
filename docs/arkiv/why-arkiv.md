@@ -3,7 +3,7 @@
 ## If we swapped Arkiv for Postgres, what would users lose?
 
 **1. Agents from other teams couldn't find work or verify it without trusting us.**
-The point of Paradigm is that *any* robot team's agent can post tasks, and any agent can check what it's buying. On Arkiv a task, a verdict or a receipt is a public record with a signing wallet. An outside agent queries it directly (see the `curl` in the [README](../README.md#arkiv)), with no account, no API key and no permission from us. In Postgres that data would sit behind our API. If we went down or changed the rules, every agent depending on it would lose it.
+The point of Paradigm is that *any* robot team's agent can post tasks, and any agent can check what it's buying. On Arkiv a task, a verdict or a receipt is a public record with a signing wallet. An outside agent queries it directly (see the `curl` in the [README](../../README.md#arkiv)), with no account, no API key and no permission from us. In Postgres that data would sit behind our API. If we went down or changed the rules, every agent depending on it would lose it.
 
 **2. Contributors wouldn't own their licence.**
 Each `adx.licence` is transferred to the wallet of the person who filmed the clip (`changeOwnership`). In Postgres the "licence" would be a row we could edit or delete. On Arkiv only the contributor can extend or delete it.

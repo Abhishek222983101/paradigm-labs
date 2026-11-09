@@ -1,5 +1,5 @@
 // AES-256-GCM clip encryption and hashing helpers (Node only).
-// Wire format: iv(12) ‖ ciphertext ‖ tag(16) — the same layout scripts/swarm-smoke.ts proved against Swarm.
+// Wire format: iv(12) ‖ ciphertext ‖ tag(16) — the same layout scripts/swarm/swarm-smoke.ts proved against Swarm.
 import { createCipheriv, createDecipheriv, createHash, randomBytes, timingSafeEqual } from "node:crypto"
 
 const IV = 12

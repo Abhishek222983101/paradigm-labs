@@ -28,7 +28,7 @@ Summarise the requirements relevant to your current sub-phase before writing cod
 1. Run its acceptance check; record Passed/Failed in `docs/build/BUILD-PLAN.md`.
 2. Add on-chain actions to `docs/sponsors/PROOFS.md` with explorer links.
 3. Log real sponsor-tool friction (not our own mistakes) in `docs/sponsors/session-logs/<sponsor>-session.md` with repro steps.
-4. Update `AI_USAGE.md` with what AI wrote.
+4. Update `docs/AI_USAGE.md` with what AI wrote.
 5. Commit (conventional message + Co-Authored-By line) and push.
 
 ## Boundaries

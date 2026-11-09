@@ -16,7 +16,7 @@
 | Task | Owner | Inputs | Output | Definition of done | Depends on |
 |---|---|---|---|---|---|
 | P0.1 Workspace + tooling | agent | repo | Biome, tsconfig, shared/db packages | `pnpm typecheck && pnpm lint` pass | — |
-| P0.2 Env validation + doctor | agent | `.env` | `env.ts`, `scripts/doctor.ts` | doctor table all ✓ | P0.1 |
+| P0.2 Env validation + doctor | agent | `.env` | `env.ts`, `scripts/ops/doctor.ts` | doctor table all ✓ | P0.1 |
 | P0.3 Database | agent | §10.2 | Drizzle schema, tables | `\dt` shows tables | P0.1 |
 | P0.4 Design tokens + shell | agent | 04-UI-UX | themed shell, PWA manifest | shell visible on phone, both themes | P0.1 |
 | P1.1 Schemas + role wallets | agent | §10.1 | `schemas.ts`, wallets in `.env` | create+read test on `adx-test` ns | P0 |

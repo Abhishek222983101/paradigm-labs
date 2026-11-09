@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Copies the worker's secrets from adx/.env into the Railway "worker" service. Run it yourself:
-#   bash scripts/railway-worker-env.sh
+#   bash scripts/ops/railway-worker-env.sh
 # Prints names only, never values. Railway redeploys the worker automatically afterwards.
 set -euo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../.."
 
 NAMES=(ARKIV_ACCESS_KEY ARKIV_PLATFORM_WORKER_KEY ARKIV_VERIFIER_KEY DATABASE_URL UPLOAD_TOKEN_SECRET GEMINI_API_KEY)
 

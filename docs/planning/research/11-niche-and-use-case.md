@@ -195,7 +195,7 @@ Source rows: research/03 §1, §3; research/04 §3–4; research/05 §11.
   - **Q8**: the independent agent = a CLI procurement agent plus a third-laptop `curl`.
   - **Grilling Q2**: the winning read = the licence check plus the "unique humans" count.
 - **New entities:** `adx.policy` (signed budget, buyer-owned) and `adx.licence` (created by the platform, then `changeOwnership` to the contributor in the same `executeBatch`; expiry = licence term).
-- **Contributor wallets need a little tGLM** to withdraw or renew. Pre-fund the demo wallets and log it in `arkiv/friction.md`.
+- **Contributor wallets need a little tGLM** to withdraw or renew. Pre-fund the demo wallets and log it in `docs/arkiv/friction.md`.
 - **Privacy:** only per-campaign HMAC pseudonyms go on Arkiv, never the nullifier. Coarse dHash buckets only.
 - **Risks to spike in hour 1:**
   - (a) dynamic `payTo` with `@x402/hedera` 2.30.0. Fallback: static `payTo` = platform, then an HTS transfer to the contributor written as a receipt, honestly labelled.

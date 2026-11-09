@@ -1,6 +1,6 @@
 # 05 — Backend Schema
 
-> Companion doc. Canonical code-level definitions: system architecture §10 (Arkiv `defineSchema` + Neon SQL). Judge-facing Arkiv description: `arkiv/schema.md`.
+> Companion doc. Canonical code-level definitions: system architecture §10 (Arkiv `defineSchema` + Neon SQL). Judge-facing Arkiv description: `docs/arkiv/schema.md`.
 
 ## Entities
 **Public (Arkiv, Rabdi):**

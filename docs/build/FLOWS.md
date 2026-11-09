@@ -62,7 +62,7 @@ Notes: `MediaRecorder.start(1000)` (iOS freeze bug), mp4 with webm fallback, max
 1. Contributor opens **My licences**: each clip's `adx.licence` (owned by their embedded wallet) with licensee, term and time left.
 2. **Withdraw** → their wallet deletes the entity (signed in the browser, gas pre-funded).
 3. Before building its dataset, the buyer agent queries live licences for each clip it holds. A missing licence → the clip is dropped, and the manifest `humans`/`samples` counts update.
-4. Outside proof: `scripts/outside-agent.ts` (and a `curl`) shows the same licence list straight from Arkiv.
+4. Outside proof: `scripts/ops/outside-agent.ts` (and a `curl`) shows the same licence list straight from Arkiv.
 
 ## F8. Outside agent (independent read)
 A separate script, sharing no code or API with our app beyond the public schema names, queries Arkiv for: open tasks from our buyer, verdicts owned by our verifier, receipts, live licences. It prints the same state our UI shows, with explorer links.

@@ -173,11 +173,11 @@ add(
   "every write via safeCreate → assertPublicSafe (14 tests)",
 )
 for (const f of [
-  "arkiv/schema.md",
-  "arkiv/friction.md",
-  "arkiv/reach.md",
-  "arkiv/why-arkiv.md",
-  "arkiv/how-you-use-arkiv.md",
+  "docs/arkiv/schema.md",
+  "docs/arkiv/friction.md",
+  "docs/arkiv/reach.md",
+  "docs/arkiv/why-arkiv.md",
+  "docs/arkiv/how-you-use-arkiv.md",
 ]) {
   add(
     "Arkiv",
@@ -198,8 +198,8 @@ add(
   "Arkiv",
   "A-7",
   "Outside-agent script reads Arkiv directly",
-  existsSync("scripts/outside-agent.ts") ? "ok" : "todo",
-  "scripts/outside-agent.ts",
+  existsSync("scripts/ops/outside-agent.ts") ? "ok" : "todo",
+  "scripts/ops/outside-agent.ts",
 )
 
 // ---------------- Swarm (Arkiv bonus) ----------------
@@ -233,7 +233,7 @@ add(
   sales.length ? "ok" : "no",
   "x402 returns the key after settle",
 )
-add("Swarm", "S-doc", "arkiv/swarm.md", fileOk("arkiv/swarm.md") ? "ok" : "todo", "doc")
+add("Swarm", "S-doc", "docs/arkiv/swarm.md", fileOk("docs/arkiv/swarm.md") ? "ok" : "todo", "doc")
 
 // ---------------- World ----------------
 await check("World", "WI-1", "IDKit claims verified server-side in production (real World IDs)", async () => {
@@ -297,9 +297,9 @@ add("ETHGlobal", "E-1/2", "Public repo, steady commits", "ok", `${commits} commi
 add(
   "ETHGlobal",
   "E-4",
-  "AI_USAGE.md + planning docs in repo",
-  fileOk("AI_USAGE.md", 500) && existsSync("docs/planning") ? "ok" : "no",
-  "AI_USAGE.md, docs/planning/",
+  "docs/AI_USAGE.md + planning docs in repo",
+  fileOk("docs/AI_USAGE.md", 500) && existsSync("docs/planning") ? "ok" : "no",
+  "docs/AI_USAGE.md, docs/planning/",
 )
 add("ETHGlobal", "E-6", "2–4 min demo video", "todo", "record")
 add("ETHGlobal", "E-3", "Submitted with Hedera + Arkiv (+Swarm) + World", "todo", "submission form")

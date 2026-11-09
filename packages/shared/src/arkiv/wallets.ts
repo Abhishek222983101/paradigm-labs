@@ -1,4 +1,4 @@
-// Public writer addresses, one per role (created by scripts/arkiv-wallets.ts, 6 Nov 2026).
+// Public writer addresses, one per role (created by scripts/arkiv/arkiv-wallets.ts, 6 Nov 2026).
 // These are public on purpose: every read filters by them, so nobody can spoof our entities
 // by writing their own `adx.task` (security §15 "Fake entities with our schema names").
 import type { Address } from "viem"

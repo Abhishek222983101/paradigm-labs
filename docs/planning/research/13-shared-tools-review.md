@@ -41,7 +41,7 @@ for s in better-interface better-accessibility better-layout better-writing bett
   done
 done
 ```
-Alternative (whole plugin, 14 skill descriptions in every session, ~1k tokens): `/plugin marketplace add jakubkrehel/skills` then `/plugin install interfaces@interfaces`. Add both to `AI_USAGE.md` as third-party MIT skills.
+Alternative (whole plugin, 14 skill descriptions in every session, ~1k tokens): `/plugin marketplace add jakubkrehel/skills` then `/plugin install interfaces@interfaces`. Add both to `docs/AI_USAGE.md` as third-party MIT skills.
 
 **Where they fit:** use them once the demo path works end to end (around hour 18–22).
 1. Run `find-animation-opportunities` on the dashboard and agent-run screens. Implement only the ≤5 items it keeps.
@@ -70,7 +70,7 @@ Alternative (whole plugin, 14 skill descriptions in every session, ~1k tokens): 
 
 ## Should we adopt a doc structure? (5, 7, 8)
 
-**No restructure mid-build.** Our planning set already covers PRD, TRD and decisions: `00-SESSION-BRIEF` (master), `03-DECISIONS`, `adx/arkiv/*` judging files, `sponsor-logs/`, `AI_USAGE.md`. Adding 7–8 parallel docs would duplicate the brief. The bundle's "read all seven before every feature" rule also costs tokens on every session.
+**No restructure mid-build.** Our planning set already covers PRD, TRD and decisions: `00-SESSION-BRIEF` (master), `03-DECISIONS`, `adx/arkiv/*` judging files, `sponsor-logs/`, `docs/AI_USAGE.md`. Adding 7–8 parallel docs would duplicate the brief. The bundle's "read all seven before every feature" rule also costs tokens on every session.
 
 Cheap cherry-picks worth doing in `adx/`:
 1. **Owner table in AGENTS.md/CLAUDE.md** (from the agent board): area → owner → folders. Agents ask before editing someone else's folder, and each post starts with `[Name's Claude]`. Free, and it prevents collisions.

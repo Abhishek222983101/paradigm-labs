@@ -167,7 +167,7 @@ IDKit: "Build a product that uses IDKit to solve a real trust moment… We are r
 | E-1 | Fresh repo, all code after start, planning disclosed | all | `git log` first commit 06 Nov |
 | E-2 | Commit per sub-phase | all | — |
 | E-3 | Hedera + Arkiv(+Swarm) + World | P10 | submission form |
-| E-4/E-5 | `AI_USAGE.md`, `docs/planning/`, this doc | P10 | — |
+| E-4/E-5 | `docs/AI_USAGE.md`, `docs/planning/`, this doc | P10 | — |
 | E-6 | Demo script, 1080p screen recording, human VO | P10 | video |
 | H-1 | `GET /api/x402/clip/:key` (`@x402/next`, `ExactHederaScheme`, x402.org facilitator) | P5 | T-PAY-1 |
 | H-2 | Buyer agent discovers endpoint via `adx.verifier` on Arkiv, pays without approval under threshold | P6 | T-AGT-1 |
@@ -323,13 +323,13 @@ adx/
 │       ├── src/hcs.ts          spend-log topic
 │       └── failures.json       model failure cases (demo input)
 ├── packages/
-│   ├── shared/                 arkiv/ (schemas, client, guard, queue, queries), crypto.ts, env.ts, types.ts, events.ts
+│   ├── shared/                 docs/arkiv/ (schemas, client, guard, queue, queries), crypto.ts, env.ts, types.ts, events.ts
 │   └── db/                     drizzle schema, migrations, client
 ├── infra/bee/                  Bee node image + key-injecting entrypoint
 ├── infra/rpc-router/           Sepolia RPC router for Bee
 ├── scripts/                    smoke tests, seed:arkiv, outside-agent.ts, eval/
 ├── eval/                       16-clip labelled set (manifest only; clips git-ignored)
-├── arkiv/                      sponsor-required Arkiv docs
+├── docs/arkiv/                      sponsor-required Arkiv docs
 └── docs/                       sponsors/, build/, planning/
 ```
 
@@ -718,7 +718,7 @@ All inputs validated with zod. Errors use one shape: `{error:{code,message}}`.
 ## 10. Data model
 
 ### 10.1 Arkiv schemas (code-level)
-Canonical definitions; `arkiv/schema.md` is the judge-facing description of the same. Namespace prefix from `ARKIV_NS` (default `adx`) so a testnet reset can be recovered by bumping it.
+Canonical definitions; `docs/arkiv/schema.md` is the judge-facing description of the same. Namespace prefix from `ARKIV_NS` (default `adx`) so a testnet reset can be recovered by bumping it.
 
 ```ts
 // packages/shared/src/arkiv/schemas.ts
@@ -1025,7 +1025,7 @@ Feature freeze when P8 ends (target Fri ~23:30–Sat 00:30). If behind schedule,
 
 **P0.2 Env validation**
 - `packages/shared/src/env.ts`: zod schemas per service (`webEnv`, `workerEnv`, `agentEnv`) reading `process.env`; on failure print missing names and exit.
-- `scripts/doctor.ts`: loads `.env`, checks each provider (Arkiv block number, Neon `select 1`, Hedera mirror account, World discovery, Anthropic `models.list`, Bee health via Railway — skipped locally).
+- `scripts/ops/doctor.ts`: loads `.env`, checks each provider (Arkiv block number, Neon `select 1`, Hedera mirror account, World discovery, Anthropic `models.list`, Bee health via Railway — skipped locally).
 - **Acceptance:** `pnpm doctor` prints a green table. **You'll see:** one table with every dependency ✓/✗.
 
 **P0.3 Database**
@@ -1039,13 +1039,13 @@ Feature freeze when P8 ends (target Fri ~23:30–Sat 00:30). If behind schedule,
 ### P1 — Arkiv core (difficulty 3) · ~75 min
 **Goal:** the shared data layer, nonce-safe writes, and the first user-facing reads.
 
-**P1.1 Schemas and clients** — write §10.1 schemas; confirm constructor names from `node_modules/@arkiv-network/sdk/dist/schema`. `client.ts` with `publicClient` and `walletFor(role)` reading role keys; generate the four role wallets (`scripts/arkiv-wallets.ts`: creates keys into `.env` if missing, prints addresses), fund each from the funder with the faucet (user claims tGLM per wallet if needed; 10 tGLM covers thousands of writes). **Acceptance:** unit test creates and reads each schema on Rabdi under `ARKIV_NS=adx-test`.
+**P1.1 Schemas and clients** — write §10.1 schemas; confirm constructor names from `node_modules/@arkiv-network/sdk/dist/schema`. `client.ts` with `publicClient` and `walletFor(role)` reading role keys; generate the four role wallets (`scripts/arkiv/arkiv-wallets.ts`: creates keys into `.env` if missing, prints addresses), fund each from the funder with the faucet (user claims tGLM per wallet if needed; 10 tGLM covers thousands of writes). **Acceptance:** unit test creates and reads each schema on Rabdi under `ARKIV_NS=adx-test`.
 
 **P1.2 Write guard** — `guard.ts` + tests (secret-looking keys/values rejected; normal values pass). Every wallet write in the codebase calls `safeCreate/safePatch/...` wrappers that run the guard. **Acceptance:** tests pass; a write containing a 64-hex string in `title` throws.
 
 **P1.3 Signer queue** — `queue.ts`: per-signer promise chain, 3 retries, on timeout reconcile by querying for the idempotency attribute (`$key` predicted with `predictEntityKeys` where possible). **Acceptance:** 10 parallel creates on one signer all land, no nonce errors.
 
-**P1.4 Queries + seed** — `queries.ts` (§10.1 list). `scripts/seed-arkiv.ts`: writes the `adx.verifier` listing (endpoint `https://adx-paradigm.vercel.app/api/x402/clip`, price, payTo) and one demo task "Fold a towel, top-down" (3 slots, 3 USDC, 24 h) with rubric JSON uploaded to Swarm. Heartbeat job lives in the agent later (P6). **Acceptance:** `pnpm seed:arkiv` prints entity keys + explorer links; rows added to PROOFS.
+**P1.4 Queries + seed** — `queries.ts` (§10.1 list). `scripts/arkiv/seed-arkiv.ts`: writes the `adx.verifier` listing (endpoint `https://adx-paradigm.vercel.app/api/x402/clip`, price, payTo) and one demo task "Fold a towel, top-down" (3 slots, 3 USDC, 24 h) with rubric JSON uploaded to Swarm. Heartbeat job lives in the agent later (P6). **Acceptance:** `pnpm seed:arkiv` prints entity keys + explorer links; rows added to PROOFS.
 
 **P1.5 First user-facing reads** — `/tasks` (RSC) listing open tasks with countdowns; `/explorer` with 4 named queries showing SDK code, JSON result, explorer links. **Acceptance (T-ARK-2):** board on the live URL shows the seeded task; explorer returns the same key. **You'll see:** the seeded task live on the phone, read straight from Arkiv.
 
@@ -1079,7 +1079,7 @@ Feature freeze when P8 ends (target Fri ~23:30–Sat 00:30). If behind schedule,
 **P4.5 Publish + live status** — `publish.ts`: submission (worker wallet) ∥ verification (verifier wallet) through the signer queues; patch claim → `submitted`; an event per stage; `/submissions/[key]` SSE page with step list and verdict card (timestamps, evidence lines, Swarm + Arkiv links). **Acceptance:** phone sees each stage tick live; entities visible on the Arkiv explorer. **You'll see:** the whole check animate on the phone in ~20 s.
 
 ### P5 — Payments (difficulty 5) · ~2 h
-**P5.1 Endpoint** 🧪 — `/api/x402/clip/[key]` with `withX402`; per-request price from the task, `payTo` per §12. 404 for non-accepted. Test with `scripts/x402-smoke.ts` pointed at the deployed route. **Acceptance (T-PAY-1):** 402 → paid → 200 on the preview URL; tx on HashScan.
+**P5.1 Endpoint** 🧪 — `/api/x402/clip/[key]` with `withX402`; per-request price from the task, `payTo` per §12. 404 for non-accepted. Test with `scripts/hedera/x402-smoke.ts` pointed at the deployed route. **Acceptance (T-PAY-1):** 402 → paid → 200 on the preview URL; tx on HashScan.
 
 **P5.2 Hooks** — `onBeforeSettle` (still accepted, payment row `settling`, idempotent on submission), `onAfterSettle` (receipt entity with `mode:"live"`, `approval`, tx id; licence create + `changeOwnership` to contributor wallet; payment `settled`), `onSettleFailure`. **Acceptance (T-PAY-2):** forced settlement failure (bad facilitator URL) → no receipt, no key, payment `failed`.
 
@@ -1097,7 +1097,7 @@ Feature freeze when P8 ends (target Fri ~23:30–Sat 00:30). If behind schedule,
 ### P7 — Licences, outside agent, manifest (difficulty 3) · ~75 min
 **P7.1 My licences + withdraw** — `/me` lists `adx.licence` owned by the wallet; gas drip; Withdraw = browser `deleteEntity`. **Acceptance (T-LIC-1):** licence disappears from Arkiv; agent's next pass drops the clip (event in console).
 
-**P7.2 Outside agent** — `scripts/outside-agent.ts` (no imports from our app except schema names; or plain JSON-RPC) + README `curl`. **Acceptance (T-E2E-1):** prints the same tasks, verdicts, receipts and licences as the UI.
+**P7.2 Outside agent** — `scripts/ops/outside-agent.ts` (no imports from our app except schema names; or plain JSON-RPC) + README `curl`. **Acceptance (T-E2E-1):** prints the same tasks, verdicts, receipts and licences as the UI.
 
 **P7.3 Manifest** — agent writes/updates `adx.manifest` with samples + distinct humans; manifest JSON on Swarm. **Acceptance:** landing counters match the manifest.
 
@@ -1108,7 +1108,7 @@ Console (policy panel, live feed, approvals, spend log), landing with live count
 Record the 16 clips, `pnpm eval`, fix what fails, security review of routes (Trail of Bits skills: insecure-defaults, sharp-edges on policy/guard), rate limits, `seed:arkiv` reset drill (bump `ARKIV_NS`). **Acceptance:** confusion matrix in README; reset drill under 10 min.
 
 ### P10 — Docs, video, submission (difficulty 2) · ~2.5 h
-`/arkiv/` five files + `swarm.md` (from session logs + queries), README (setup, architecture diagram, payment flow, tx IDs, writer wallets, `curl` query, measured numbers, "what we used"), `docs/sponsors/WORLD-DEBRIEF.md`, `AI_USAGE.md` final, clean screenshots into `docs/proofs/`, record video per `DEMO-SCRIPT.md`, submit with Hedera + Arkiv (+Swarm) + World (all tracks ticked). **Acceptance:** every row in §20 ticked.
+`/arkiv/` five files + `swarm.md` (from session logs + queries), README (setup, architecture diagram, payment flow, tx IDs, writer wallets, `curl` query, measured numbers, "what we used"), `docs/sponsors/WORLD-DEBRIEF.md`, `docs/AI_USAGE.md` final, clean screenshots into `docs/proofs/`, record video per `DEMO-SCRIPT.md`, submit with Hedera + Arkiv (+Swarm) + World (all tracks ticked). **Acceptance:** every row in §20 ticked.
 
 ---
 
@@ -1121,7 +1121,7 @@ Record the 16 clips, `pnpm eval`, fix what fails, security review of routes (Tra
 | ⬜ | `/arkiv/schema.md`, `friction.md`, `reach.md`, `why-arkiv.md`, `how-you-use-arkiv.md` | A-4, A-5 |
 | ⬜ | `/arkiv/swarm.md` with entity key ↔ ref link, batch + wallet, Bee node, files, steps, video moment, friction | S-2 |
 | ⬜ | World debrief (Agent Pass + IDKit) | W-5, WI-5 |
-| ⬜ | `AI_USAGE.md`, `docs/planning/`, this doc | E-4, E-5 |
+| ⬜ | `docs/AI_USAGE.md`, `docs/planning/`, this doc | E-4, E-5 |
 | ⬜ | Partner prizes selected: Hedera, Arkiv (+Swarm bonus), World | E-3 |
 
 ## 21. Risks and fallbacks
@@ -1140,7 +1140,7 @@ Record the 16 clips, `pnpm eval`, fix what fails, security review of routes (Tra
 **Local paths**
 - Repo: `~/ethglobal-mumbai/adx` · planning: `~/ethglobal-mumbai/00-SESSION-BRIEF.md`, `03-DECISIONS-AND-OPEN-QUESTIONS.md`, `research/01–13`
 - Secrets: `~/ethglobal-mumbai/adx/.env` (git-ignored) · env names: `.env.example`
-- Sponsor docs: `docs/sponsors/` · build docs: `docs/build/` · Arkiv files: `arkiv/`
+- Sponsor docs: `docs/sponsors/` · build docs: `docs/build/` · Arkiv files: `docs/arkiv/`
 
 **Live**
 - App: https://adx-paradigm.vercel.app · Repo: https://github.com/Abhishek222983101/agentic-data-exchange

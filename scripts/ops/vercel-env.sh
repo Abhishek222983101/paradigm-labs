@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Copies the web app's server-side env vars from adx/.env into the Vercel project (production + preview).
-# Run it yourself from the repo root:  bash scripts/vercel-env.sh
+# Run it yourself from the repo root:  bash scripts/ops/vercel-env.sh
 # Prints names only, never values. Re-running is safe (existing values are replaced).
 set -euo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../.."
 cd apps/web
 
 NAMES=(

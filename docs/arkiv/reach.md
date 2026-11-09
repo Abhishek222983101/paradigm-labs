@@ -11,7 +11,7 @@
 ## Would they use it?
 
 - **Robot teams:** the demand is real. Large robot-learning datasets are collected by paid human demonstrators, and teams publicly ask for more diverse, real-home data. What we add is the agent-run loop: post a task, verify, pay, licence, at clip granularity.
-- **Contributors:** in our own testing on 6–7 Nov, two different people verified with World ID and claimed slots on their phones. One filmed clips that were accepted and received **3 USDC twice and 6 USDC twice** in their own Hedera account (see the [README](../README.md#settled-payments-hedera-testnet-all-mirror-verified)). Earnings show on `/me` right after the agent pays.
+- **Contributors:** in our own testing on 6–7 Nov, two different people verified with World ID and claimed slots on their phones. One filmed clips that were accepted and received **3 USDC twice and 6 USDC twice** in their own Hedera account (see the [README](../../README.md#settled-payments-hedera-testnet-all-mirror-verified)). Earnings show on `/me` right after the agent pays.
 - **We haven't run a user study.** These are our own and teammates' runs, not strangers'.
 
 ## Can they try it today?

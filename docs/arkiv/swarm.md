@@ -27,7 +27,7 @@ We never put a key-bearing Swarm reference (128-hex) on Arkiv. We encrypt oursel
 
 | | |
 |---|---|
-| Bee | 2.8.3 light node on Railway (`ethersphere/bee:2.8.3`), Sepolia, private network only ([`infra/bee/`](../infra/bee/)) |
+| Bee | 2.8.3 light node on Railway (`ethersphere/bee:2.8.3`), Sepolia, private network only ([`infra/bee/`](../../infra/bee/)) |
 | Node wallet / buyer of the batch | [`0xCEfca762D3Cdc231B20220dA681021b562afF694`](https://sepolia.etherscan.io/address/0xCEfca762D3Cdc231B20220dA681021b562afF694) |
 | Chequebook | [`0x6f045e3A46048c77F3555AA87b78CD665Dd891bB`](https://sepolia.etherscan.io/address/0x6f045e3A46048c77F3555AA87b78CD665Dd891bB) |
 | Postage batch | `c0cc54366a3a337d4a84ab78af74a26440d122eb3af5952d65734d8221332665`, depth 20, bought on-chain with [`createBatch`](https://sepolia.etherscan.io/tx/0x515df5c447f6c91d81c8391019f3a3702cb0a47b08968867ea43de5c2ee520d1) (0.2175 sBZZ) |
@@ -41,7 +41,7 @@ We never put a key-bearing Swarm reference (128-hex) on Arkiv. We encrypt oursel
 - `apps/worker/src/pipeline/run.ts`: encrypt → Swarm → Arkiv submission
 - `apps/worker/src/main.ts`: `/swarm/:ref/bytes` read-back through our node
 - `apps/web/src/app/api/x402/clip/[key]/route.ts`: key released after Hedera settlement
-- `scripts/swarm-fund.ts`, `swarm-fund-node.ts`, `swarm-buy-batch.ts`, `infra/rpc-router/`
+- `scripts/swarm/swarm-fund.ts`, `swarm-fund-node.ts`, `swarm-buy-batch.ts`, `infra/rpc-router/`
 
 ## Steps (what happens to one clip)
 
@@ -55,7 +55,7 @@ We never put a key-bearing Swarm reference (128-hex) on Arkiv. We encrypt oursel
 
 ## Friction
 
-Full list with repro steps: [`../docs/sponsors/SWARM-FEEDBACK.md`](../docs/sponsors/SWARM-FEEDBACK.md). The big ones:
+Full list with repro steps: [`../docs/sponsors/SWARM-FEEDBACK.md`](../sponsors/SWARM-FEEDBACK.md). The big ones:
 - the slim Bee image has no CA certificates;
 - free Sepolia RPCs are pruned, so we built an RPC router;
 - the public gateway is mainnet-only, so testnet clips are served through our node;

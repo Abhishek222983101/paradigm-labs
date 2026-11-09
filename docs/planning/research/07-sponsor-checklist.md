@@ -10,7 +10,7 @@
 | E1 | From scratch: all work starts after **Thu 5 Nov 21:00 IST**. No prior project code, designs or assets. | ⚠️ | Empty repo at 21:00. Ask staff at check-in whether our written plan counts (Q15). |
 | E2 | Commit history: no giant single commits. | ⚠️ | Commit at least every hour, per person. |
 | E3 | Clearly separate new from reused work (libraries and starter kits only). | ✅ | README "What we used" section. **No Skarl code** (it has no licence). |
-| E4 | AI attribution: say which files or parts AI wrote or assisted. | ⚠️ | `AI_USAGE.md` kept up to date during the build. |
+| E4 | AI attribution: say which files or parts AI wrote or assisted. | ⚠️ | `docs/AI_USAGE.md` kept up to date during the build. |
 | E5 | All spec files, prompts and planning artifacts go in the repo. | ⚠️ | Copy `00`–`03` + `research/` into `/docs/planning/` in the repo. |
 | E6 | Max 3 partner prizes. | ✅ | Hedera, Arkiv, World. Swarm bonus doesn't use a pick. |
 | E7 | Submit before **Sat 7 Nov 09:00 IST** (no late entries). | ⚠️ | Feature freeze Fri 23:00. Video recorded by Sat 05:00. |
@@ -56,7 +56,7 @@
 | A7 | `/arkiv/reach.md`: who it's for, would they use it, can they try it today, will we keep building | ❌ | Write Fri night. |
 | A8 | `/arkiv/why-arkiv.md`: what users lose if Arkiv were Postgres; what we kept off Arkiv and why | ❌ | Core argument: open, vendor-neutral, agent-readable records with owner-signed provenance and natural expiry. Media, PII and nullifiers stay off. |
 | A9 | `/arkiv/how-you-use-arkiv.md`: do filters, ownership and expiry fit the app; does each feature change what users see | ❌ | Expiry = task deadline; claims expire with the claim window; ownership = who signs each record. |
-| A10 | Public repo with an open-source licence; say how AI was used | ⚠️ | MIT licence + `AI_USAGE.md`. |
+| A10 | Public repo with an open-source licence; say how AI was used | ⚠️ | MIT licence + `docs/AI_USAGE.md`. |
 | A11 | Swarm bonus (optional): Arkiv + Swarm used meaningfully; `/arkiv/swarm.md` with entity key ↔ Swarm ref, postage batch ID, Bee node, files, steps, demo timestamp, friction. **Never put an encrypted Swarm ref raw in an entity.** | ❌ | Decide later (Q17). Candidate: put the dataset manifest or public sample previews on Swarm, never raw private video. |
 
 **Judging (25% each):** friction feedback, reach, why Arkiv, how you use Arkiv. Past Arkiv winners made **expiry and ownership the core mechanic**, with a read side users can see.

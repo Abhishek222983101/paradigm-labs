@@ -151,7 +151,7 @@ The "RN is slow and laggy" worry doesn't matter here: there's no RN. The web cap
 
 **Not used:** Convex, Expo/RN, Capacitor 8.6, `ffmpeg.wasm`, `fluent-ffmpeg`, `@google/generative-ai`, v1 `x402-*`, Vercel Blob (fallback only, if the worker upload endpoint fails: `@vercel/blob` 2.8.2 client upload bypasses 4.5 MB).
 
-### Repo structure (fits the existing `adx/` skeleton: `apps/ packages/ scripts/ arkiv/ sponsor-logs/`)
+### Repo structure (fits the existing `adx/` skeleton: `apps/ packages/ scripts/ docs/arkiv/ sponsor-logs/`)
 ```
 adx/
   package.json            # pnpm workspaces, overrides { "@hiero-ledger/sdk": "2.90.1" }, engines node>=22.10
@@ -175,7 +175,7 @@ adx/
     associate-usdc.ts     # user-run, imports SDK primitives from @x402/hedera
     smoke-x402.ts  smoke-swarm.ts  smoke-gemini.ts
   tests/e2e/              # Playwright
-  arkiv/  sponsor-logs/  docs/planning/  AI_USAGE.md  THIRD-PARTY-NOTICES.md
+  docs/arkiv/  sponsor-logs/  docs/planning/  docs/AI_USAGE.md  THIRD-PARTY-NOTICES.md
 ```
 - Use **three apps, not one**: the worker can't live on Vercel, and the agent has to be a separate client for the judging story.
 - **No Turborepo.** `pnpm -r` and `pnpm --filter` are enough.

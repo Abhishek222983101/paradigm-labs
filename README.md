@@ -109,7 +109,7 @@ Proofs: 6 USDC paid after a human approval with World ID, [tx 1](https://hashsca
 |---|---|---|
 | **x402 payments** | Clips are sold behind `GET /api/x402/clip/:key`. Unaccepted clips return 404; accepted ones return 402 with the task's price and `payTo` = the contributor's own Hedera account. The facilitator settles testnet USDC (`0.0.429274`). The key, receipt and licence are released only after settlement. | [`apps/web/src/app/api/x402/clip/[key]/route.ts`](apps/web/src/app/api/x402/clip/%5Bkey%5D/route.ts) · [`apps/agent/src/pay.ts`](apps/agent/src/pay.ts) |
 | **Spending policy** | Plain code, not an LLM: ≤ 5 USDC pay, > 5 ask a human, > 10 never, 20 per day. | [`packages/shared/src/policy.ts`](packages/shared/src/policy.ts) |
-| **Contributor accounts** | Hedera accounts created from the phone wallet's key (ECDSA alias, unlimited auto-association), so contributors never sign anything or associate tokens. | [`scripts/hedera-alias-spike.ts`](scripts/hedera-alias-spike.ts) |
+| **Contributor accounts** | Hedera accounts created from the phone wallet's key (ECDSA alias, unlimited auto-association), so contributors never sign anything or associate tokens. | [`scripts/hedera/hedera-alias-spike.ts`](scripts/hedera/hedera-alias-spike.ts) |
 | **Consensus Service spend log** | Every decision (paid, paused, approved, declined) is a message on HCS topic [`0.0.11343565`](https://hashscan.io/testnet/topic/0.0.11343565). | [`apps/agent/src/log.ts`](apps/agent/src/log.ts) |
 | **Hedera Agent Kit 4.2** | Only two tools loaded: `submit_topic_message` and `get_account_token_balances`, so the kit can't move money. | [`apps/agent/src/hedera-kit.ts`](apps/agent/src/hedera-kit.ts) |
 
@@ -148,17 +148,43 @@ curl -s https://rpc.rabdi.db-chain.testnet.arkiv.network -H 'content-type: appli
             {"select":{"key":true,"owner":true,"expiresAt":true,"attributes":{"title":true,"reward":true,"slots":true}},"limit":"0x32"}]}'
 ```
 
-Arkiv docs in this repo: [`schema`](arkiv/schema.md) · [`why Arkiv`](arkiv/why-arkiv.md) · [`how we use it`](arkiv/how-you-use-arkiv.md) · [`friction log`](arkiv/friction.md) · [`reach`](arkiv/reach.md)
+Arkiv docs in this repo: [`schema`](docs/arkiv/schema.md) · [`why Arkiv`](docs/arkiv/why-arkiv.md) · [`how we use it`](docs/arkiv/how-you-use-arkiv.md) · [`friction log`](docs/arkiv/friction.md) · [`reach`](docs/arkiv/reach.md)
 
 ### Swarm: encrypted clip storage
 
-Clips are encrypted with AES-256-GCM before they leave the worker, then stored through **our own Bee 2.8.3 node** with **our own postage batch**, bought on-chain with sBZZ we swapped from Sepolia ETH. Swarm holds only ciphertext. The buyer gets the key only after the Hedera payment settles. Details: [`arkiv/swarm.md`](arkiv/swarm.md) · [`infra/bee`](infra/bee) · [`docs/sponsors/SWARM-FEEDBACK.md`](docs/sponsors/SWARM-FEEDBACK.md).
+Clips are encrypted with AES-256-GCM before they leave the worker, then stored through **our own Bee 2.8.3 node** with **our own postage batch**, bought on-chain with sBZZ we swapped from Sepolia ETH. Swarm holds only ciphertext. The buyer gets the key only after the Hedera payment settles. Details: [`docs/arkiv/swarm.md`](docs/arkiv/swarm.md) · [`infra/bee`](infra/bee) · [`docs/sponsors/SWARM-FEEDBACK.md`](docs/sponsors/SWARM-FEEDBACK.md).
 
 ### Gemini: the verifier
 
 Gemini 3 Flash watches each clip **without being told the expected answer**. It reports what it sees: which steps happened, the spoken word, the finger count, signs of a screen or replay. **Plain code** ([`packages/shared/src/verdict.ts`](packages/shared/src/verdict.ts)) compares that report with the task's rubric and the challenge, then accepts, sends to review, or rejects.
 
 **Every on-chain action, with a link:** [`docs/sponsors/PROOFS.md`](docs/sponsors/PROOFS.md).
+
+## Repository layout
+
+```
+apps/
+  web/          Next.js app on Vercel: every page, World ID claim, recorder, x402 endpoint
+  worker/       Upload + verification pipeline, encryption, Swarm and Arkiv writes
+  agent/        The AI agent that buys clips: policy, x402 payments, Agent Pass approvals
+packages/
+  shared/       Arkiv schemas + write guard, spending policy, verdict rules, crypto
+  db/           Postgres schema (private state only)
+infra/
+  bee/          Our Swarm node
+  rpc-router/   RPC routing service
+scripts/
+  arkiv/        Arkiv wallets, seeding tasks, smoke tests
+  hedera/       Hedera accounts, HCS topic, x402 smoke test
+  swarm/        Funding, postage batch, Bee keystore
+  ops/          Health check, sponsor check, env setup, outside-agent demo
+docs/
+  sponsors/     Architecture, product, proofs, partner feedback, session logs
+  arkiv/        Arkiv schema, why Arkiv, friction log, Swarm notes
+  build/        System architecture, flows, payments, build plan
+  planning/     Pre-build research and decisions
+  media/        Images used in this README
+```
 
 ## Run it locally
 
@@ -190,12 +216,12 @@ pnpm outside-agent            # what any outside agent sees, from Arkiv only
 ## Honest scope
 
 - Testnets only: Hedera testnet, Arkiv Rabdi, Swarm on Sepolia.
-- Licence withdrawal (a contributor removes their clip from sale) is designed in [`arkiv/schema.md`](arkiv/schema.md) but not built.
+- Licence withdrawal (a contributor removes their clip from sale) is designed in [`docs/arkiv/schema.md`](docs/arkiv/schema.md) but not built.
 - Selfie Check needs World to enable it for our app. Claims accept any verified World ID; payment approvals require Orb.
 - Gemini's report never decides on its own; the rules in code do.
 
 ## History
 
-This repo continues **Paradigm** as built at ETHGlobal Mumbai 2026 (5–7 Nov). The version that was submitted and judged, with its full commit history, is frozen at [Abhishek222983101/agentic-data-exchange](https://github.com/Abhishek222983101/agentic-data-exchange). AI assistance is disclosed in [`AI_USAGE.md`](AI_USAGE.md).
+This repo continues **Paradigm** as built at ETHGlobal Mumbai 2026 (5–7 Nov). The version that was submitted and judged, with its full commit history, is frozen at [Abhishek222983101/agentic-data-exchange](https://github.com/Abhishek222983101/agentic-data-exchange). AI assistance is disclosed in [`docs/AI_USAGE.md`](docs/AI_USAGE.md).
 
 Licence: [MIT](LICENSE).

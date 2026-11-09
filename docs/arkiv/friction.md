@@ -1,6 +1,6 @@
 # Arkiv — friction and feedback (Paradigm, ETHGlobal Mumbai 2026)
 
-**Raw log with timestamps:** [`../docs/sponsors/session-logs/arkiv-session.md`](../docs/sponsors/session-logs/arkiv-session.md) · **Proofs:** [`../docs/sponsors/PROOFS.md`](../docs/sponsors/PROOFS.md) ARK-01…07 · **Schemas:** [`schema.md`](schema.md)
+**Raw log with timestamps:** [`../docs/sponsors/session-logs/arkiv-session.md`](../sponsors/session-logs/arkiv-session.md) · **Proofs:** [`../docs/sponsors/PROOFS.md`](../sponsors/PROOFS.md) ARK-01…07 · **Schemas:** [`schema.md`](schema.md)
 
 SDK `@arkiv-network/sdk` 1.0.1 on the Rabdi testnet. Every public record in Paradigm is an Arkiv entity, written by one wallet per role: buyer, worker, verifier, agent. Records cover the task, claim, submission (with Swarm ref and fingerprints), verification, receipt, licence and verifier heartbeat. We also read Arkiv to dedup clips across buyers.
 
